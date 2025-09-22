@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Estratégica de Comisiones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="initial-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Bienvenido a la Calculadora Estratégica</h2>
+            <p>Para comenzar, elige cómo deseas cargar los datos:</p>
+            <div id="modal-actions" class="modal-actions">
+                <button id="continue-session-btn" class="btn btn-success" style="display: none;"><i class="fas fa-play-circle"></i> Continuar Sesión Anterior</button>
+                <button id="manual-load-btn" class="btn btn-primary"><i class="fas fa-edit"></i> Empezar Carga Manual</button>
+                <button id="import-file-modal-btn" class="btn btn-secondary"><i class="fas fa-file-excel"></i> Importar Archivo Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="header-content">
+            <h1>Calculadora Estratégica de Comisiones</h1>
+            <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú de navegación"><i class="fas fa-bars"></i></button>
+        </div>
+        <nav id="main-nav" class="main-nav">
+            <ul>
+                <li><a href="#configuracion-principal">Configuración</a></li>
+                <li><a href="#resultados">Resultados</a></li>
+                <li><a href="#desempeno">Desempeño</a></li>
+                <li><a href="#gestion-datos">Gestión</a></li>
+                <li><a href="#configuracion-avanzada">Avanzada</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="app-container">
+        <section class="instructions-section">
+            <details>
+                <summary><i class="fas fa-info-circle"></i> Mostrar/Ocultar Instrucciones</summary>
+                <div class="details-content">
+                     <p><strong>Paso 1:</strong> Configura los parámetros en la sección "Configuración Avanzada" y guarda.</p>
+                     <p><strong>Paso 2:</strong> Ajusta el "Valor de la Suscripción" y los "Costos Fijos" del mes.</p>
+                     <p><strong>Paso 3:</strong> Ingresa el "Recaudo Bruto" de cada orientador. Las suscripciones y comisiones se calcularán automáticamente.</p>
+                     <p><strong>Paso 4:</strong> Marca la casilla "Senior" para los orientadores que apliquen al bono.</p>
+                </div>
+            </details>
+        </section>
+
+        <div id="main-content-wrapper" class="locked">
+            <!-- SECCIÓN 1: CONFIGURACIÓN PRINCIPAL (COMPLETA) -->
+            <section id="configuracion-principal" class="card">
+                <h2><i class="fas fa-cogs"></i> 1. Configuración Principal del Mes</h2>
+                <form id="main-config-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="select-month">Mes de Cálculo</label>
+                        <select id="select-month" name="select-month"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-subscriptions">Meta de Suscripciones (Mes)</label>
+                        <input type="number" id="goal-subscriptions" name="goal-subscriptions" min="0" placeholder="Ej: 150" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="advisor-count">Cantidad de Orientadores</label>
+                        <input type="number" id="advisor-count" name="advisor-count" placeholder="0" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="subscription-value">Valor de la Suscripción</label>
+                        <input type="text" id="subscription-value" name="subscription-value" class="currency-input" placeholder="$ 0">
+                    </div>
+                    <div class="form-group">
+                        <label for="fixed-costs">Costos Operativos Fijos</label>
+                        <input type="text" id="fixed-costs" name="fixed-costs" class="currency-input" placeholder="$ 0">
+                    </div>
+                </form>
+            </section>
+
+            <!-- SECCIÓN 2: RESULTADOS (COMPLETA) -->
+            <section id="resultados" class="card">
+                <h2><i class="fas fa-chart-line"></i> 2. Resultados del Mes (En Tiempo Real)</h2>
+                <div id="results-grid" class="results-grid">
+                    <div class="info-box">
+                        <h4>Total Suscripciones</h4>
+                        <p id="total-subscriptions-result">0</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Meta del Mes</h4>
+                        <p id="month-goal-result">0</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Cumplimiento</h4>
+                        <p id="goal-percentage-result">0%</p>
+                        <div class="progress-bar-container">
+                            <div id="goal-progress-bar" class="progress-bar"></div>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <h4>Excedente/Faltante (Bruto)</h4>
+                        <p id="surplus-deficit-result">$ 0</p>
+                    </div>
+                    <div class="info-box large">
+                        <h4>Pool Comisiones Líderes</h4>
+                        <p id="leader-pool-result">$ 0</p>
+                        <ul id="leader-pool-breakdown"></ul>
+                    </div>
+                    <div class="info-box success large">
+                        <h4>Utilidad Estimada</h4>
+                        <p id="estimated-profit-result">$ 0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: DESEMPEÑO (COMPLETA) -->
+            <section id="desempeno" class="card">
+                <h2><i class="fas fa-users"></i> 3. Desempeño de Orientadores</h2>
+                <div class="table-container">
+                    <table id="advisors-performance-table">
+                        <thead>
+                            <tr>
+                                <th>Orientador</th>
+                                <th>Senior</th>
+                                <th>Recaudo Bruto</th>
+                                <th>Suscripciones (Calculado)</th>
+                                <th>Recaudo Real (83.84%)</th>
+                                <th>Tasa Comisión</th>
+                                <th>Pago Comisión</th>
+                                <th>Bono Senior</th>
+                                <th>Pago Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Las filas se generan con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: GESTIÓN DE DATOS (COMPLETA) -->
+            <section id="gestion-datos" class="card">
+                <h2><i class="fas fa-database"></i> 4. Gestión de Datos</h2>
+                <div class="actions-container">
+                    <button id="download-template-btn" class="btn btn-secondary"><i class="fas fa-download"></i> Descargar Plantilla</button>
+                    <button id="import-file-btn" class="btn btn-secondary"><i class="fas fa-file-upload"></i> Importar Archivo</button>
+                    <input type="file" id="file-input" accept=".xlsx, .xls" style="display: none;">
+                    <button id="export-results-btn" class="btn btn-success"><i class="fas fa-file-excel"></i> Exportar Resultados</button>
+                    <button id="reset-app-btn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Limpiar y Empezar de Nuevo</button>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: CONFIGURACIÓN AVANZADA (COMPLETA) -->
+            <section id="configuracion-avanzada">
+                 <details id="advanced-config-details" class="card">
+                    <summary>
+                        <h2><i class="fas fa-tools"></i> 5. Configuración Avanzada</h2>
+                    </summary>
+                    <div class="details-content form-grid-advanced">
+                        <div class="form-group span-2">
+                            <label for="advisors-list">Lista de Orientadores (uno por línea)</label>
+                            <textarea id="advisors-list" rows="5" placeholder="Juan Perez&#10;Maria Rodriguez"></textarea>
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="monthly-goals">Metas por Mes (formato: Mes=Meta, uno por línea)</label>
+                            <textarea id="monthly-goals" rows="5" placeholder="Enero=100&#10;Febrero=120"></textarea>
+                        </div>
+                        <div class="dynamic-table-container span-3">
+                            <label>Tabla de Comisiones de Orientadores</label>
+                            <table id="advisor-commission-table">
+                                <thead><tr><th>Mín. Suscripciones</th><th>Tasa de Comisión (%)</th><th>Acción</th></tr></thead>
+                                <tbody id="advisor-commission-tbody"></tbody>
+                            </table>
+                            <button id="add-advisor-commission-row" class="btn btn-sm"><i class="fas fa-plus"></i> Añadir Nivel</button>
+                        </div>
+                        <div class="dynamic-table-container span-3">
+                            <label>Tabla de Comisiones de Líderes</label>
+                            <table id="leader-commission-table">
+                                <thead><tr><th>Mín. Cumplimiento (%)</th><th>Tasa de Comisión (%)</th><th>Acción</th></tr></thead>
+                                <tbody id="leader-commission-tbody"></tbody>
+                            </table>
+                             <button id="add-leader-commission-row" class="btn btn-sm"><i class="fas fa-plus"></i> Añadir Nivel</button>
+                        </div>
+                        <div class="dynamic-table-container span-3">
+                            <label>Distribución Pool de Comisiones de Líderes</label>
+                            <table id="leader-distribution-table">
+                                <thead><tr><th>Rol de Liderazgo</th><th>Porcentaje de Distribución (%)</th><th>Acción</th></tr></thead>
+                                <tbody id="leader-distribution-tbody"></tbody>
+                            </table>
+                            <button id="add-leader-distribution-row" class="btn btn-sm"><i class="fas fa-plus"></i> Añadir Rol</button>
+                        </div>
+                        <div class="form-group span-3">
+                            <label for="senior-bonus-value">Valor del Bono Senior</label>
+                            <input type="text" id="senior-bonus-value" class="currency-input" placeholder="$ 0">
+                        </div>
+                        <div class="form-group span-6">
+                            <button id="save-config-btn" class="btn btn-primary btn-large"><i class="fas fa-save"></i> Guardar Configuración y Activar</button>
+                        </div>
+                    </div>
+                </details>
+            </section>
+        </div>
+    </main>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

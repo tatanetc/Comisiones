@@ -1,0 +1,553 @@
+/* =================================================================
+   1. CONFIGURACIÓN GLOBAL Y VARIABLES
+   ================================================================= */
+:root {
+    --primary-color: #370c31;
+    --secondary-color: #8a2be2;
+    --background-color: #f8f7f9;
+    --text-color: #343a40;
+    --card-bg-color: #ffffff;
+    --border-color: #e0e0e0;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --locked-overlay-color: rgba(248, 247, 249, 0.85);
+
+    --font-family: 'Montserrat', sans-serif;
+    --header-height: 70px;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-height);
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+h3 { font-size: 1.2rem; }
+h4 { font-size: 1rem; margin-bottom: 0.5rem; color: #555; }
+
+main {
+    padding: 1rem;
+    max-width: 1400px;
+    margin: var(--header-height) auto 0 auto;
+}
+
+section {
+    margin-bottom: 1.5rem;
+}
+
+.card {
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    overflow: hidden;
+}
+
+/* =================================================================
+   2. MODAL DE INICIO
+   ================================================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--card-bg-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    width: 90%;
+    max-width: 500px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+}
+
+.modal-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* =================================================================
+   3. ENCABEZADO Y NAVEGACIÓN
+   ================================================================= */
+.main-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 900;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-height);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-content h1 {
+    color: white;
+    font-size: 1.2rem;
+}
+
+.menu-toggle {
+    display: block; /* Oculto en desktop */
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.main-nav {
+    display: none; /* Oculto por defecto en móvil */
+    background-color: var(--primary-color);
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    width: 100%;
+}
+
+.main-nav.nav-open {
+    display: block;
+}
+
+.main-nav ul {
+    list-style: none;
+}
+
+.main-nav a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background-color 0.2s ease;
+}
+
+.main-nav a:hover {
+    background-color: var(--secondary-color);
+}
+
+
+/* =================================================================
+   4. CONTENIDO PRINCIPAL Y ESTADO BLOQUEADO
+   ================================================================= */
+#main-content-wrapper {
+    position: relative;
+}
+
+#main-content-wrapper.locked {
+    pointer-events: none;
+}
+
+#main-content-wrapper.locked::before {
+    content: 'Guarda la configuración avanzada para activar';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--locked-overlay-color);
+    z-index: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(4px);
+}
+
+/* =================================================================
+   5. COMPONENTES: FORMULARIOS, BOTONES, TABLAS
+   ================================================================= */
+/* --- Botones --- */
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: var(--font-family);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-primary:hover { background-color: var(--secondary-color); }
+.btn-secondary { background-color: #6c757d; color: white; }
+.btn-secondary:hover { background-color: #5a6268; }
+.btn-success { background-color: var(--success-color); color: white; }
+.btn-success:hover { background-color: #218838; }
+.btn-danger { background-color: var(--danger-color); color: white; }
+.btn-danger:hover { background-color: #c82333; }
+.btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+.btn-large { padding: 1rem 2rem; font-size: 1.2rem; width: 100%; }
+
+/* --- Formularios --- */
+.form-grid, .form-grid-advanced {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.form-grid-advanced {
+     grid-template-columns: repeat(6, 1fr);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.span-2 { grid-column: span 2; }
+.form-group.span-3 { grid-column: span 3; }
+.form-group.span-6 { grid-column: span 6; }
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+}
+
+input:read-only {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* --- Tablas --- */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+thead th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.totals-row {
+    font-weight: 700;
+    background-color: #e9ecef !important;
+    border-top: 2px solid var(--primary-color);
+}
+
+.totals-row th, .totals-row td {
+    color: var(--primary-color);
+}
+
+.dynamic-table-container {
+    grid-column: span 6;
+}
+
+/* =================================================================
+   6. SECCIONES ESPECÍFICAS
+   ================================================================= */
+/* --- Instrucciones y Configuración Avanzada (details) --- */
+details {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+details > summary {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none; /* Oculta el marcador por defecto */
+}
+details > summary::-webkit-details-marker { display: none; } /* Chrome */
+details > summary i { margin-right: 0.5rem; }
+.details-content {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Resultados --- */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-box {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border-left: 5px solid var(--secondary-color);
+    text-align: center;
+}
+
+.info-box.large {
+    grid-column: span 1 / -1;
+}
+
+.info-box.success {
+    background-color: #eaf6ec;
+    border-color: var(--success-color);
+}
+.info-box.success p {
+    color: var(--success-color);
+}
+
+.info-box p {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+#leader-pool-breakdown {
+    list-style: none;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.progress-bar-container {
+    height: 10px;
+    background: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+/* --- Gestión de Datos --- */
+.actions-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* =================================================================
+   7. MEDIA QUERIES PARA RESPONSIVE DESIGN
+   ================================================================= */
+
+/* Tablets y Escritorios Pequeños */
+@media (min-width: 768px) {
+    .header-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .menu-toggle {
+        display: none;
+    }
+    
+    .main-nav {
+        display: block;
+        position: static;
+        width: auto;
+        background: none;
+    }
+    
+    .main-nav ul {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .main-nav a {
+        padding: 0.5rem 1rem;
+        border-bottom: none;
+        border-radius: var(--border-radius);
+    }
+
+    .modal-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .info-box.large {
+        grid-column: span 2;
+    }
+}
+
+/* Escritorios Grandes */
+@media (min-width: 1200px) {
+    main {
+        padding: 2rem;
+    }
+    
+    .form-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .results-grid {
+         grid-template-columns: repeat(4, 1fr);
+    }
+    .info-box.large {
+        grid-column: span 2;
+    }
+}
+
+/* 
+
+/* ... (Todo el código hasta la sección 7) ... */
+
+/* =================================================================
+   8. CORRECCIÓN PARA EL FLUJO DE CARGA MANUAL
+   ================================================================= */
+/* 
+  Cuando el wrapper está bloqueado, queremos que la sección de 
+  configuración avanzada sea la única excepción.
+*/
+#main-content-wrapper.locked #configuracion-avanzada {
+    /* Permite que esta sección reciba clics y eventos del mouse */
+    pointer-events: auto;
+    
+    /* Crea un nuevo contexto de apilamiento para que z-index funcione */
+    position: relative;
+    
+    /* Eleva esta sección por encima del velo de bloqueo (que tiene un z-index de 800) */
+    z-index: 801;
+}
+
+/* =================================================================
+   9. AJUSTES PARA NUEVAS FUNCIONALIDADES
+   ================================================================= */
+.modal-actions {
+    flex-direction: column; /* Asegura el orden vertical en todas las vistas */
+    gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .modal-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+/* Estilo para el input de checkbox en la tabla */
+td.checkbox-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+input[type="checkbox"].senior-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* Estilos para la fila de totales con colspan */
+.totals-row th[colspan="2"] {
+    text-align: left;
+}
