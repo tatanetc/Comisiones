@@ -550,4 +550,54 @@ input[type="checkbox"].senior-checkbox {
 /* Estilos para la fila de totales con colspan */
 .totals-row th[colspan="2"] {
     text-align: left;
+
+}
+
+/* =================================================================
+   10. AJUSTES FINALES PARA RESPONSIVE EN MÓVILES
+   ================================================================= */
+
+/* Estas reglas se aplican solo a pantallas con un ancho MÁXIMO de 768px (tablets y móviles) */
+@media (max-width: 768px) {
+
+    /* --- Arreglo para Configuración Avanzada --- */
+    /* Forzamos el grid a tener una sola columna */
+    .form-grid-advanced {
+        grid-template-columns: 1fr;
+    }
+
+    /* Reseteamos los 'span' para que cada elemento ocupe la única columna disponible */
+    .form-group.span-2,
+    .form-group.span-3,
+    .form-group.span-6,
+    .dynamic-table-container.span-3 {
+        grid-column: span 1;
+    }
+
+    /* --- Arreglo para TODAS las tablas --- */
+    /* 
+      Este es el cambio más importante. Creamos un contenedor que permite
+      deslizar la tabla horizontalmente si su contenido es demasiado ancho.
+    */
+    .table-container,
+    .dynamic-table-container {
+        overflow-x: auto; /* ¡Esta es la magia! Habilita el scroll horizontal */
+        -webkit-overflow-scrolling: touch; /* Mejora la experiencia de scroll en iOS */
+        padding-bottom: 10px; /* Pequeño espacio para que se vea mejor el scrollbar */
+    }
+
+    /* 
+      Evitamos que los títulos de las tablas se partan en varias líneas,
+      forzando a la tabla a mantener su ancho natural.
+    */
+    #advisors-performance-table thead th,
+    .dynamic-table-container thead th {
+        white-space: nowrap;
+    }
+
+    /* Ajuste para los inputs dentro de las tablas en móvil */
+    #advisors-performance-table td input,
+    .dynamic-table-container td input {
+        min-width: 100px; /* Damos un ancho mínimo para que no se vean tan pequeños */
+    }
 }
