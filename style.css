@@ -554,50 +554,62 @@ input[type="checkbox"].senior-checkbox {
 }
 
 /* =================================================================
-   10. AJUSTES FINALES PARA RESPONSIVE EN MÓVILES
+   10. AJUSTES FINALES PARA RESPONSIVE EN MÓVILES (VERSIÓN CORREGIDA)
    ================================================================= */
-
-/* Estas reglas se aplican solo a pantallas con un ancho MÁXIMO de 768px (tablets y móviles) */
+/* Estas reglas se aplican solo a pantallas con un ancho MÁXIMO de 768px */
 @media (max-width: 768px) {
 
-    /* --- Arreglo para Configuración Avanzada --- */
-    /* Forzamos el grid a tener una sola columna */
-    .form-grid-advanced {
-        grid-template-columns: 1fr;
-    }
-
-    /* Reseteamos los 'span' para que cada elemento ocupe la única columna disponible */
-    .form-group.span-2,
-    .form-group.span-3,
-    .form-group.span-6,
-    .dynamic-table-container.span-3 {
-        grid-column: span 1;
-    }
-
-    /* --- Arreglo para TODAS las tablas --- */
+    /* --- Arreglo #1: Forzar el apilamiento vertical en Configuración Avanzada --- */
     /* 
-      Este es el cambio más importante. Creamos un contenedor que permite
-      deslizar la tabla horizontalmente si su contenido es demasiado ancho.
+      Cambiamos el display de 'grid' a 'block'. Esto es más directo y obliga a cada
+      elemento hijo a ocupar su propia línea, uno debajo del otro.
+    */
+    .form-grid-advanced {
+        display: block;
+    }
+
+    /* 
+      Añadimos un margen inferior a los elementos para que no queden pegados
+      cuando se apilen verticalmente.
+    */
+    .form-grid-advanced > .form-group,
+    .form-grid-advanced > .dynamic-table-container {
+        margin-bottom: 2rem;
+    }
+
+
+    /* --- Arreglo #2: Scroll horizontal para todas las tablas --- */
+    /* 
+      Este es el cambio clave para la tabla de desempeño y las tablas dinámicas.
+      El contenedor de la tabla permitirá hacer scroll con el dedo.
     */
     .table-container,
     .dynamic-table-container {
-        overflow-x: auto; /* ¡Esta es la magia! Habilita el scroll horizontal */
-        -webkit-overflow-scrolling: touch; /* Mejora la experiencia de scroll en iOS */
-        padding-bottom: 10px; /* Pequeño espacio para que se vea mejor el scrollbar */
+        overflow-x: auto; /* ¡LA MAGIA! Habilita el scroll horizontal */
+        -webkit-overflow-scrolling: touch; /* Mejora la fluidez del scroll en iOS */
+        padding-bottom: 10px; /* Espacio para que el scrollbar no se vea pegado */
     }
 
     /* 
-      Evitamos que los títulos de las tablas se partan en varias líneas,
-      forzando a la tabla a mantener su ancho natural.
+      Forzamos a la tabla a ocupar un ancho mínimo para que no se comprima.
+      Esto asegurará que la columna "Acción" y el botón de eliminar sean siempre visibles.
     */
-    #advisors-performance-table thead th,
-    .dynamic-table-container thead th {
+    #advisors-performance-table,
+    .dynamic-table-container table {
+        min-width: 800px; /* Un ancho generoso para que quepan todas las columnas */
+    }
+
+    /* 
+      Evitamos que los encabezados de las tablas se partan en varias líneas.
+    */
+    thead th {
         white-space: nowrap;
     }
 
-    /* Ajuste para los inputs dentro de las tablas en móvil */
-    #advisors-performance-table td input,
-    .dynamic-table-container td input {
-        min-width: 100px; /* Damos un ancho mínimo para que no se vean tan pequeños */
+    /* 
+      Aseguramos que los inputs dentro de las tablas tengan un tamaño usable.
+    */
+    td input {
+        min-width: 120px;
     }
 }
